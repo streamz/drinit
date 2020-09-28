@@ -3,7 +3,6 @@ drinit - A docker native `init` and process supervisor
 
 
 [![CircleCI](https://circleci.com/gh/streamz/drinit.svg?style=svg)](https://circleci.com/gh/streamz/drinit)
-[![GoDoc](https://godoc.org/github.com/streamz/drinit?status.svg)](https://godoc.org/github.com/streamz/drinit)
 
 drinit (`docter init`) is a simple init and process supervisor for exclusive use in Docker contaniers.
 
