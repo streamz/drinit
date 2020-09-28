@@ -89,7 +89,9 @@ How it works
 
 After spawning your process, drinit will listen for signals and forward those to the supervised process as long as the signal is not being trapped by the -t switch. Trapped signals will NOT be forwarded to child processes. However, the -t option allows for a -r that can run a script. If a signal is trapped the script run by -r will receive the *nix signum passed as $1. This allows shell scripts to perform custom workflows, and signals can be forwarded by using drinitctl within your script. ex: 
 
+```dockerfile
 ENTRYPOINT ["drinit", "-t", "SIGTERM", "-r", "./mysigterm.sh", "--"]  
+```
 
 mysigterm.sh
 --
