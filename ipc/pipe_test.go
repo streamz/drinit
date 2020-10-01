@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -23,7 +24,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var expect = []Msg { 
+var expect = []Msg{
 	{
 		Name: "start",
 		Args: []string{"a", "b", "c"},
@@ -44,7 +45,7 @@ func TestPipe(t *testing.T) {
 
 	go func() {
 		Send(fd, expect[0])
-		Send(fd, expect[1])
+		_ = Send(fd, expect[1])
 	}()
 
 	msg0 := <-recv

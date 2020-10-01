@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -19,7 +20,7 @@ package log
 
 import (
 	"fmt"
-gol "log"
+	gol "log"
 	"os"
 	"path"
 	"runtime"
@@ -37,7 +38,7 @@ func (l Level) String() string {
 // levels.
 const (
 	TraceL Level = iota
-	InfoL 
+	InfoL
 	WarnL
 	ErrorL
 	PanicL
@@ -52,47 +53,42 @@ const (
 	flags = gol.Ldate | gol.Lmicroseconds
 )
 
-var lmap = map[Level]string {
+var lmap = map[Level]string{
 	TraceL: "TRACE",
-	InfoL: 	"INFO",
-	WarnL:	"WARN",
-	ErrorL:	"ERROR",
+	InfoL:  "INFO",
+	WarnL:  "WARN",
+	ErrorL: "ERROR",
 	PanicL: "PANIC",
 }
 
-type callinfo struct {
-	pkg string
-    fil string
-    fun string
-    lne string
-}
 // Log object
 type Log struct {
-	lock 	sync.Mutex
-	level 	Level
-	stdout 	*gol.Logger
-	stderr 	*gol.Logger
+	lock   sync.Mutex
+	level  Level
+	stdout *gol.Logger
+	stderr *gol.Logger
 }
 
 var logmap = make(map[string]*Log)
 var mutex = sync.Mutex{}
 
-// Logger - create a new logger. 
+// Logger - create a new logger.
 // The package name is used and the log is cached
 func Logger() *Log {
 	_, name, _ := info(2)
-	log, ok := logmap[name]; if !ok {
+	log, ok := logmap[name]
+	if !ok {
 		mutex.Lock()
-		log = new()
+		log = newlog()
 		logmap[name] = log
 		mutex.Unlock()
 	}
 	return log
 }
 
-func new() *Log {
+func newlog() *Log {
 	return &Log{
-		level: InfoL,
+		level:  InfoL,
 		stdout: gol.New(os.Stdout, _empty, flags),
 		stderr: gol.New(os.Stderr, _empty, flags),
 	}
@@ -168,7 +164,7 @@ func (l *Log) Panic(v ...interface{}) {
 func (l *Log) _level(level Level) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
-	l.level = level 
+	l.level = level
 }
 
 func (l *Log) out(level Level, depth int, str string) {
@@ -186,18 +182,17 @@ func (l *Log) out(level Level, depth int, str string) {
 }
 
 func info(depth int) (string, string, int) {
-    pc, file, line, _ := runtime.Caller(depth)
-    _, fname := path.Split(file)
-    parts := strings.Split(runtime.FuncForPC(pc).Name(), ".")
-    pl := len(parts)
-    pkg := ""
+	pc, file, line, _ := runtime.Caller(depth)
+	_, fname := path.Split(file)
+	parts := strings.Split(runtime.FuncForPC(pc).Name(), ".")
+	pl := len(parts)
+	pkg := ""
 
-    if parts[pl-2][0] == '(' {
-        pkg = strings.Join(parts[0:pl-2], ".")
-    } else {
-        pkg = strings.Join(parts[0:pl-1], ".")
-    }
-
+	if parts[pl-2][0] == '(' {
+		pkg = strings.Join(parts[0:pl-2], ".")
+	} else {
+		pkg = strings.Join(parts[0:pl-1], ".")
+	}
 	return fname, pkg, line
 }
 

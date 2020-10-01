@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -18,40 +19,41 @@ limitations under the License.
 package util
 
 import (
-    "testing"
-    "github.com/stretchr/testify/assert"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAtomicBool(t *testing.T) {
-    b := AtomicBool{}
-    b.Set()
-    assert.True(t, b.Get(), "should be true")
-    b.Clear()
-    assert.False(t, b.Get(), "should be false")
-    assert.False(t, b.Swap(true), "should be false")
-    assert.True(t, b.Get(), "should be true")
+	b := AtomicBool{}
+	b.Set()
+	assert.True(t, b.Get(), "should be true")
+	b.Clear()
+	assert.False(t, b.Get(), "should be false")
+	assert.False(t, b.Swap(true), "should be false")
+	assert.True(t, b.Get(), "should be true")
 }
 
 func TestAtomicInt32(t *testing.T) {
-    zero := int32(0)
-    val := int32(7)
-    i32 := AtomicInt32{}
-    i32.Set(val)
-    assert.Equal(t, i32.Get(), val, "should be equal")
-    i32.Clear()
-    assert.Equal(t, i32.Get(), zero, "should be equal")
-    assert.Equal(t, i32.Swap(val), zero, "should be equal")
-    assert.Equal(t, i32.Get(), val, "should be equal")
+	zero := int32(0)
+	val := int32(7)
+	i32 := AtomicInt32{}
+	i32.Set(val)
+	assert.Equal(t, i32.Get(), val, "should be equal")
+	i32.Clear()
+	assert.Equal(t, i32.Get(), zero, "should be equal")
+	assert.Equal(t, i32.Swap(val), zero, "should be equal")
+	assert.Equal(t, i32.Get(), val, "should be equal")
 }
 
 func TestAtomicInt(t *testing.T) {
-    zero := int(0)
-    val := int(7)
-    i := AtomicInt{}
-    i.Set(val)
-    assert.Equal(t, i.Get(), val, "should be equal")
-    i.Clear()
-    assert.Equal(t, i.Get(), zero, "should be equal")
-    assert.Equal(t, i.Swap(val), zero, "should be equal")
-    assert.Equal(t, i.Get(), val, "should be equal")
+	zero := 0
+	val := 7
+	i := AtomicInt{}
+	i.Set(val)
+	assert.Equal(t, i.Get(), val, "should be equal")
+	i.Clear()
+	assert.Equal(t, i.Get(), zero, "should be equal")
+	assert.Equal(t, i.Swap(val), zero, "should be equal")
+	assert.Equal(t, i.Get(), val, "should be equal")
 }

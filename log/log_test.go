@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -18,23 +19,24 @@ limitations under the License.
 package log
 
 import (
-    "testing"
-    "github.com/stretchr/testify/assert"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLevel(t *testing.T) {
-    l := Logger()
-    l.Level(TraceL)
+	l := Logger()
+	l.Level(TraceL)
 
-    assert.True(t, l.IsTrace(), "should be true")
-    assert.Equal(t, TraceL.String(), "TRACE", "should be equal")
+	assert.True(t, l.IsTrace(), "should be true")
+	assert.Equal(t, TraceL.String(), "TRACE", "should be equal")
 
-    l = Logger()
-    assert.True(t, l.IsTrace(), "should be true")
+	l = Logger()
+	assert.True(t, l.IsTrace(), "should be true")
 
-    l.Level(InfoL)
-    assert.False(t, l.IsTrace(), "should be false")
+	l.Level(InfoL)
+	assert.False(t, l.IsTrace(), "should be false")
 
-    l = Logger()
-    assert.True(t, l.IsInfo(), "should be true")
+	l = Logger()
+	assert.True(t, l.IsInfo(), "should be true")
 }

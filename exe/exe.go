@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -38,14 +39,14 @@ func (*noCopy) Unlock() {}
 
 // Info -
 type Info struct {
-	Pid			int
-	Exit		int
-	Error		error
-	Finished 	util.AtomicBool
-	Signaled 	util.AtomicBool
-	RunT		time.Duration
-	StartT 		int64
-	EndT		int64
+	Pid		int
+	Exit	int
+	Error	error
+	Finished util.AtomicBool
+	Signaled util.AtomicBool
+	RunT	time.Duration
+	StartT	int64
+	EndT	int64
 }
 
 type status int
@@ -180,7 +181,7 @@ func (x *Exe) newcmd(name string, args ...string) *exec.Cmd {
 	cmd := exec.Command(name, args...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		Credential: cred,
-		Setpgid: true,
+		Setpgid:    true,
 	}
 
 	cmd.Env = os.Environ()

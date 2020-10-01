@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -60,9 +61,9 @@ func main() {
 	}
 
 	o := &ini.InitOpts{
-		Traps:  c.Traps,
-		Signf:  h,
-		Osuser: u,
+		Traps: c.Traps,
+		Signf: h,
+		Osusr: u,
 	}
 
 	i := ini.New(c.Supervise, c.Pipe, o)

@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -32,12 +33,12 @@ import (
 func main() {
 	c := newcli()
 	l := log.Logger()
-	m := map[int]string {
+	m := map[int]string{
 		_cycle: ipc.Cycle,
-		_down:  ipc.Down,
-		_up:    ipc.Up,
+		_down: ipc.Down,
+		_up: ipc.Up,
 	}
-	
+
 	l.Level(c.level)
 	l.Infof("drinitctl %s", c.String())
 
@@ -45,16 +46,16 @@ func main() {
 	case _proc:
 		cmd := m[c.command]
 		l.Tracef("cmd: %s run %s", cmd, strings.Join(c.run, " "))
-		msg := ipc.Msg { 
-			Name: cmd, 
+		msg := ipc.Msg{
+			Name: cmd,
 			Args: c.run,
 		}
 		ipc.Send(c.namedpipe, msg)
 	case _signal:
 		l.Tracef("sending signal %v to service", c.signal)
-		msg := ipc.Msg { 
-			Name: ipc.Signal, 
-			Args: []string{sig.SignalToName(c.signal),},
+		msg := ipc.Msg{
+			Name: ipc.Signal,
+			Args: []string{sig.SignalToName(c.signal)},
 		}
 		ipc.Send(c.namedpipe, msg)
 	}
@@ -64,7 +65,6 @@ func main() {
 const verbosemsg = "verbose logging"
 const helpemsg = "displays help usage"
 const fdmsg = "the ipc named pipe"
-const cmdmsg = "the required command line to run"
 const signalmsg = "send a signal to the supervised process"
 const commandmsg = "1 - CYCLE, 2 - UP or 3 - DOWN the supervised service"
 const runmsg = "the command to run before DOWN, after UP service command"
@@ -101,11 +101,11 @@ const (
 
 type clictx struct {
 	level		log.Level
-	namedpipe 	string
-	command 	int
-	signal 		syscall.Signal
-	ctlmode 	mode
-	run 		[]string
+	namedpipe	string
+	command		int
+	signal		syscall.Signal
+	ctlmode		mode
+	run			[]string
 }
 
 func (c *clictx) String() string {

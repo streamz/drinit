@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -26,7 +27,7 @@ type AtomicBool struct {
 
 // Get - returns the underlying primative
 func (b *AtomicBool) Get() bool {
-	return (atomic.LoadInt32(&(b.boolean)) != 0)
+	return atomic.LoadInt32(&(b.boolean)) != 0
 }
 
 // Set - sets the underlying primative
@@ -36,11 +37,11 @@ func (b *AtomicBool) Set() {
 
 // Swap - exchanges the underlying primative
 func (b *AtomicBool) Swap(value bool) bool {
-	var i int32 = 0
+	i := int32(0)
 	if value {
 		i = 1
 	}
-	return atomic.SwapInt32(&(b.boolean), int32(i)) != 0
+	return atomic.SwapInt32(&(b.boolean), i) != 0
 }
 
 // Clear - resets the underlying primative to its unitialized default value

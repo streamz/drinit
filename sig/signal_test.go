@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -33,7 +34,7 @@ import (
 
 var (
 	_, b, _, _ = runtime.Caller(0)
-	Testdata = strings.TrimSuffix(filepath.Dir(b), "/sig") + "/testdata/"
+	Testdata   = strings.TrimSuffix(filepath.Dir(b), "/sig") + "/testdata/"
 )
 
 func TestTrapSignal(t *testing.T) {
@@ -54,7 +55,7 @@ func TestTrapSignal(t *testing.T) {
 	}
 
 	h := New(opts)
-	h.Start()
+	_ = h.Start()
 
 	time.Sleep(time.Second)
 
@@ -63,7 +64,7 @@ func TestTrapSignal(t *testing.T) {
 	assert.True(t, started)
 
 	// send SIGUSR1 to the parent
-	syscall.Kill(os.Getpid(), syscall.SIGUSR1)
+	_ = syscall.Kill(os.Getpid(), syscall.SIGUSR1)
 	info := <-ctx
 	h.Stop()
 
@@ -95,7 +96,7 @@ func TestForwardSignal(t *testing.T) {
 	}
 
 	h := New(opts)
-	h.Start()
+	_ = h.Start()
 	time.Sleep(time.Second)
 
 	s, ctx := exc.Start(Testdata + "service.sh")
@@ -103,7 +104,7 @@ func TestForwardSignal(t *testing.T) {
 	assert.True(t, started)
 
 	// send SIGUSR1 to the parent
-	syscall.Kill(os.Getpid(), syscall.SIGUSR1)
+	_ = syscall.Kill(os.Getpid(), syscall.SIGUSR1)
 	info := <-ctx
 	h.Stop()
 

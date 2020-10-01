@@ -1,4 +1,5 @@
 // +build linux
+
 /*
 Copyright © 2020 streamz <bytecodenerd@gmail.com>
 
@@ -34,19 +35,19 @@ import (
 	"github.com/streamz/drinit/sig"
 )
 
-// InitOpts - 
+// InitOpts -
 type InitOpts struct {
-	Traps 	[]string
-	Signf 	sig.Signalf
-	Delay	time.Duration
-	Osuser 	*user.User
+	Traps []string
+	Signf sig.Signalf
+	Delay time.Duration
+	Osusr *user.User
 }
 
 // Init - The supervisor proces handle
 type Init struct {
 	log *log.Log
 	ctx context.Context
-    can context.CancelFunc 
+	can context.CancelFunc
 	lok *sync.RWMutex
 	ipc *ipc.Pipe
 	sig *sig.Signalh
@@ -63,7 +64,7 @@ type muxer map[string]func(*Init, []string)
 func New(cmd []string, fd string, opts *InitOpts) *Init {
 	cl := make([]string, len(cmd))
 	copy(cl, cmd)
-	
+
 	ctx, can := context.WithCancel(context.Background())
 
 	i := &Init{
@@ -72,16 +73,17 @@ func New(cmd []string, fd string, opts *InitOpts) *Init {
 		can: can,
 		lok: &sync.RWMutex{},
 		rpr: exe.NewReaper(),
-		exc: exe.New(opts.Osuser),
+		exc: exe.New(opts.Osusr),
 		syn: sync.Once{},
 		dly: opts.Delay,
 		cmd: cl,
 	}
-	
+
 	i.sig = signalhandler(i, opts)
 
 	var err error
-	i.ipc, err = ipc.New(fd); if err != nil {
+	i.ipc, err = ipc.New(fd)
+	if err != nil {
 		i.log.Panic(err.Error())
 	}
 
@@ -100,7 +102,8 @@ func (i *Init) Start() {
 		i.sig.Start()
 		go func(init *Init) {
 			started, _ := init.exc.Start(init.cmd[0], init.cmd[1:]...)
-			ok := <-started; if !ok {
+			ok := <-started
+			if !ok {
 				init.log.Panicf("failed to start program, +%v", init.exc.Info())
 			}
 		}(i)
@@ -114,14 +117,15 @@ func (i *Init) service() {
 
 	// ipc listen
 	recv := i.ipc.Open()
-	mux := newmuxer(i)
+	mux := newmuxer()
 
 	for {
 		select {
 		case msg := <-recv:
 			i.log.Tracef("ipc received message %+v", msg)
 			var e error
-			fn, ok := mux[msg.Name]; if !ok {
+			fn, ok := mux[msg.Name]
+			if !ok {
 				e = fmt.Errorf("unknown cmd %s", msg.Name)
 			}
 			if e == nil {
@@ -159,7 +163,7 @@ func (i *Init) signal(sig os.Signal) error {
 	if !ok {
 		return errors.New("os: unsupported signal type")
 	}
-	
+
 	if e := syscall.Kill(-inf.Pid, s); e != nil {
 		if e == syscall.ESRCH {
 			return errors.New("os: process already finished")
@@ -191,11 +195,12 @@ func signalhandler(i *Init, opts *InitOpts) *sig.Signalh {
 	if opts.Traps != nil {
 		ntraps = len(opts.Traps)
 	}
-	
-	traps := []os.Signal{}
+
+	var traps []os.Signal
 	if ntraps > 0 {
 		for _, t := range opts.Traps {
-			s, e := sig.ToSignal(t); if e != nil {
+			s, e := sig.ToSignal(t)
+			if e != nil {
 				i.log.Panic(e.Error())
 			} else {
 				traps = append(traps, s)
@@ -203,7 +208,7 @@ func signalhandler(i *Init, opts *InitOpts) *sig.Signalh {
 		}
 	}
 
-	sopts := sig.SignalOpts {
+	sopts := sig.SignalOpts{
 		Trapf: opts.Signf,
 		Fwrdf: func(signal os.Signal) error {
 			if signal == syscall.SIGCHLD {
@@ -246,7 +251,8 @@ func stop(i *Init) error {
 	}
 
 	time.Sleep(i.dly)
-	err := i.exc.Terminate(); if err != nil {
+	err := i.exc.Terminate()
+	if err != nil {
 		return err
 	}
 
@@ -259,7 +265,8 @@ func restart(i *Init) error {
 	defer i.lok.Unlock()
 
 	wait := i.exc.Join()
-	err := i.exc.Terminate(); if err == nil {
+	err := i.exc.Terminate()
+	if err == nil {
 		// if the program has already terminated, we just launch a new one
 		// otherwise, we wait until termination is complete
 		<-wait
@@ -267,7 +274,7 @@ func restart(i *Init) error {
 
 	i.exc = i.exc.Copy()
 	time.Sleep(i.dly)
-	
+
 	start, ctx := i.exc.Start(i.cmd[0], i.cmd[1:]...)
 	ok := <-start
 
@@ -277,7 +284,7 @@ func restart(i *Init) error {
 	}
 	return nil
 }
-	
+
 func sigp(i *Init, sig syscall.Signal) error {
 	i.lok.Lock()
 	defer i.lok.Unlock()
@@ -289,7 +296,7 @@ func sigp(i *Init, sig syscall.Signal) error {
 	return syscall.Kill(-info.Pid, sig)
 }
 
-func runproc(args []string, log *log.Log) *exe.Info {
+func runproc(args []string) *exe.Info {
 	sz := len(args)
 	if sz > 0 {
 		switch sz {
@@ -302,17 +309,18 @@ func runproc(args []string, log *log.Log) *exe.Info {
 	return nil
 }
 
-func newmuxer(i *Init) muxer {
+func newmuxer() muxer {
 	mux := make(muxer)
 	mux[ipc.Signal] = func(i *Init, args []string) {
 		s := ""
 		if len(args) == 1 {
 			s = args[0]
 		}
-		signal, e := sig.ToSignal(s); if e != nil {
+		sign, e := sig.ToSignal(s)
+		if e != nil {
 			i.log.Error(e.Error())
 		}
-		if sigp(i, signal.(syscall.Signal)); e != nil {
+		if sigp(i, sign.(syscall.Signal)); e != nil {
 			i.log.Error(e.Error())
 		}
 	}
@@ -321,14 +329,14 @@ func newmuxer(i *Init) muxer {
 			i.log.Error(e.Error())
 		}
 		if len(args) > 0 {
-			if info := runproc(args, i.log); info.Error != nil {
+			if info := runproc(args); info.Error != nil {
 				i.log.Error(info.Error.Error())
 			}
 		}
 	}
 	mux[ipc.Down] = func(i *Init, args []string) {
 		if len(args) > 0 {
-			if info := runproc(args, i.log); info.Error != nil {
+			if info := runproc(args); info.Error != nil {
 				i.log.Error(info.Error.Error())
 			}
 		}
