@@ -20,7 +20,7 @@ package log
 
 import (
 	"fmt"
-	gol "log"
+gol "log"
 	"os"
 	"path"
 	"runtime"

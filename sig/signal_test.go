@@ -55,7 +55,7 @@ func TestTrapSignal(t *testing.T) {
 	}
 
 	h := New(opts)
-	_ = h.Start()
+	h.Start()
 
 	time.Sleep(time.Second)
 
@@ -64,7 +64,7 @@ func TestTrapSignal(t *testing.T) {
 	assert.True(t, started)
 
 	// send SIGUSR1 to the parent
-	_ = syscall.Kill(os.Getpid(), syscall.SIGUSR1)
+	syscall.Kill(os.Getpid(), syscall.SIGUSR1)
 	info := <-ctx
 	h.Stop()
 
@@ -96,7 +96,7 @@ func TestForwardSignal(t *testing.T) {
 	}
 
 	h := New(opts)
-	_ = h.Start()
+	h.Start()
 	time.Sleep(time.Second)
 
 	s, ctx := exc.Start(Testdata + "service.sh")
@@ -104,7 +104,7 @@ func TestForwardSignal(t *testing.T) {
 	assert.True(t, started)
 
 	// send SIGUSR1 to the parent
-	_ = syscall.Kill(os.Getpid(), syscall.SIGUSR1)
+	syscall.Kill(os.Getpid(), syscall.SIGUSR1)
 	info := <-ctx
 	h.Stop()
 
