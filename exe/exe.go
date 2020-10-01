@@ -39,14 +39,13 @@ func (*noCopy) Unlock() {}
 
 // Info -
 type Info struct {
-	Pid		int
-	Exit	int
-	Error	error
-	Finished util.AtomicBool
-	Signaled util.AtomicBool
-	RunT	time.Duration
-	StartT	int64
-	EndT	int64
+	Pid	int
+	Exit int
+	Error error
+	RunT time.Duration
+	StartT int64
+	EndT int64
+	Finished, Signaled util.AtomicBool
 }
 
 type status int

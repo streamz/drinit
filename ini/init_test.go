@@ -35,7 +35,7 @@ import (
 
 var (
 	_, b, _, _ = runtime.Caller(0)
-	Testdata   = strings.TrimSuffix(filepath.Dir(b), "/ini") + "/testdata/"
+	Testdata = strings.TrimSuffix(filepath.Dir(b), "/ini") + "/testdata/"
 )
 
 func TestStop(t *testing.T) {
