@@ -39,12 +39,10 @@ func (*noCopy) Unlock() {}
 
 // Info -
 type Info struct {
-	Pid	int
-	Exit int
 	Error error
 	RunT time.Duration
-	StartT int64
-	EndT int64
+	Pid, Exit int
+	StartT, EndT int64
 	Finished, Signaled util.AtomicBool
 }
 
