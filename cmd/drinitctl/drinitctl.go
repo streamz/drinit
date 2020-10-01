@@ -50,14 +50,14 @@ func main() {
 			Name: cmd,
 			Args: c.run,
 		}
-		ipc.Send(c.namedpipe, msg)
+		ipc.Send(c.pipe, msg)
 	case _signal:
 		l.Tracef("sending signal %v to service", c.signal)
 		msg := ipc.Msg{
 			Name: ipc.Signal,
 			Args: []string{sig.SignalToName(c.signal)},
 		}
-		ipc.Send(c.namedpipe, msg)
+		ipc.Send(c.pipe, msg)
 	}
 }
 
@@ -100,18 +100,18 @@ const (
 )
 
 type clictx struct {
-	level		log.Level
-	namedpipe	string
-	command		int
-	signal		syscall.Signal
-	ctlmode		mode
-	run			[]string
+	level   log.Level
+	pipe    string
+	command int
+	signal  syscall.Signal
+	ctlmode mode
+	run     []string
 }
 
 func (c *clictx) String() string {
 	return fmt.Sprintf(
-		"level: %s, namedpipe: %s, command: %d, signal: %s, mode: %s, run: %v",
-		c.level.String(), c.namedpipe, c.command, c.signal.String(), c.ctlmode.String(), c.run)
+		"level: %s, pipe: %s, command: %d, signal: %s, mode: %s, run: %v",
+		c.level.String(), c.pipe, c.command, c.signal.String(), c.ctlmode.String(), c.run)
 }
 
 func newcli() *clictx {
@@ -145,7 +145,7 @@ func newcli() *clictx {
 
 	ctx := &clictx{
 		level: level,
-		namedpipe: *pipe,
+		pipe: *pipe,
 		ctlmode: _invalid,
 		run: []string{},
 	}
