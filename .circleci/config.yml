@@ -1,0 +1,50 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.15
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - run: 
+          name: run test
+          command: | 
+            go get -v -t -d ./...
+            go vet ./...
+            go test -v ./...
+
+  # deploy:
+  #   docker:
+  #     - image: circleci/golang:1.15
+  #   working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+  #   steps:
+  #     - checkout
+  #     - run: 
+  #         name: deps
+  #         command: |
+  #           go get -u github.com/mitchellh/gox
+  #           go get github.com/github-release/github-release
+  #     - run:
+  #         name: compile
+  #         command: |
+  #           cd cmd/drinit
+  #           gox -os="linux" -arch="amd64" -output="/go/src/github.com/streamz/drinit/dist/{{.OS}}_{{.Arch}}/drinit"
+  #           cd ../drinitctl
+  #           gox -os="linux" -arch="amd64" -output="/go/src/github.com/streamz/drinit/dist/{{.OS}}_{{.Arch}}/drinitctl"
+      
+  #     - add_ssh_keys:
+  #         fingerprints:  
+  #           - 30:df:19:db:ca:ec:66:90:26:50:4b:11:c4:c2:ad:ea
+  #     - run:
+  #         name: create release
+  #         command: |
+  #           tag=$(semantics --output-tag)
+  #           echo tagging as $tag
+  #           if [ "$tag" ]; then
+  #             ghr -t "${GITHUB_TOKEN}" -u "${CIRCLE_PROJECT_USERNAME}" -r "${CIRCLE_PROJECT_REPONAME}" -replace $tag dist/
+  #           else
+  #             echo "The commit message(s) did not indicate a major/minor/patch version."
+  #           fi
