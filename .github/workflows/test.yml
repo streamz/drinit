@@ -1,4 +1,4 @@
-name: build
+name: test
 
 on: [push]
 
@@ -24,9 +24,3 @@ jobs:
         run: |
           go test -v ./...
           go vet -v ./...
-
-      - name: Build cmds
-        run: |
-          cd cmd/drinit go build -v .
-          cd ../drinitctl go build -v .
-
