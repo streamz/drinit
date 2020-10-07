@@ -1,8 +1,5 @@
-drinit - A docker native `init` and process supervisor
+drinit
 =============================================
-
-
-[![CircleCI](https://circleci.com/gh/streamz/drinit.svg?style=svg)](https://circleci.com/gh/streamz/drinit)
 
 drinit (`docter init`) is a simple init and process supervisor for exclusive use in Docker contaniers.
 
@@ -39,6 +36,7 @@ In your Docker file, add an ENTRYPOINT and use "Exec form".
     # Add drinit
     ENV DRINIT_VERSION v0.1.0
     ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinit .
+    ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinitctl .
     RUN chmod +x drinit
     RUN chmod +x drinitctl
     ENTRYPOINT ["drinit", "--"]  
@@ -51,6 +49,7 @@ The following example traps SIGTERM signal and runs a script:
      # Add drinit
     ENV DRINIT_VERSION v0.1.0
     ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinit .
+    ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinitctl .    
     RUN chmod +x drinit
     RUN chmod +x drinitctl
     ADD https://example.com/sigterm.sh sigterm.sh
