@@ -77,7 +77,7 @@ You can leverage drinitctl directly or via shell script to perform health checks
 
 ## Auto Reaping ##
 
-By default, drinit must run as PID 1 so that it can reap zombies. Any command run by drinit is a child of drinit. The autoreaping feature ensures that any command that is executed does not live as a zombie process in your container./
+By default, drinit must run as PID 1 so that it can reap zombies. Any command run by drinit is a child of drinit. The autoreaping feature ensures that any command that is executed does not live as a zombie process in your container.
 
 
 ## Signal Handling ##
@@ -101,11 +101,11 @@ mysigterm.sh
 
 if [ $1 == 15 ] # sigterm
 then
-    ./drinitctl -c3 -r dosomething.sh
+    ./drinitctl -c3 
 fi
 ```
 
-In the example above, when the drinit traps a SIGTERM, it will invoke mysigterm.sh, passing the signum as $1. The script will then use the supervisor control application (drinitctl), to instruct drinit to cycle the application and then run the "dosomething.sh" script. drinit will reap zombie processes that were created within your container by the shell.
+In the example above, when the drinit traps a SIGTERM, it will invoke mysigterm.sh, passing the signum as $1. The script will then use the supervisor control application (drinitctl), to instruct drinit to cycle the application. drinit will reap zombie processes that were created within your container by the shell.
 
 
 Authors
