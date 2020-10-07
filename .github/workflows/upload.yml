@@ -31,15 +31,15 @@ jobs:
           go build cmd/drinitctl/drinitctl.go
 
       - name: Upload to release
-          uses: JasonEtco/upload-to-release@master
-          with:
-            args: drinit application/octet-stream
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: drinit application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload to release
-          uses: JasonEtco/upload-to-release@master
-          with:
-            args: drinitctl application/octet-stream
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: JasonEtco/upload-to-release@master
+        with:
+          args: drinitctl application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
