@@ -3,6 +3,8 @@ drinit
 
 drinit (`docter init`) is a simple init and process supervisor for exclusive use in Docker contaniers.
 
+![Build](https://github.com/streamz/drinit/workflows/Build/badge.svg)
+
 What can drinit do?
 ---------
 
