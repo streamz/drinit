@@ -45,7 +45,7 @@ func TestPipe(t *testing.T) {
 
 	go func() {
 		Send(fd, expect[0])
-		_ = Send(fd, expect[1])
+		Send(fd, expect[1])
 	}()
 
 	msg0 := <-recv

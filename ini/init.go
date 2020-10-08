@@ -99,7 +99,9 @@ func Close(i *Init) {
 func (i *Init) Start() {
 	i.syn.Do(func() {
 		i.rpr.Start()
-		i.sig.Start()
+		if e := i.sig.Start(); e != nil {
+			i.log.Panic(e.Error())
+		}
 		go func(init *Init) {
 			started, _ := init.exc.Start(init.cmd[0], init.cmd[1:]...)
 			ok := <-started
@@ -185,7 +187,7 @@ func (i *Init) join() <-chan struct{} {
 }
 
 func (i *Init) shutdown() {
-	stop(i)
+	_ = stop(i)
 	i.sig.Stop()
 	i.ipc.Close()
 }
@@ -251,8 +253,7 @@ func stop(i *Init) error {
 	}
 
 	time.Sleep(i.dly)
-	err := i.exc.Terminate()
-	if err != nil {
+	if err := i.exc.Terminate(); err != nil {
 		return err
 	}
 
@@ -320,7 +321,7 @@ func newmuxer() muxer {
 		if e != nil {
 			i.log.Error(e.Error())
 		}
-		if sigp(i, sign.(syscall.Signal)); e != nil {
+		if e = sigp(i, sign.(syscall.Signal)); e != nil {
 			i.log.Error(e.Error())
 		}
 	}
