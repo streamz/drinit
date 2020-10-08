@@ -50,14 +50,18 @@ func main() {
 			Name: cmd,
 			Args: c.run,
 		}
-		ipc.Send(c.pipe, msg)
+		if e := ipc.Send(c.pipe, msg); e != nil {
+			l.Panic(e.Error())
+		}
 	case _signal:
 		l.Tracef("sending signal %v to service", c.signal)
 		msg := ipc.Msg{
 			Name: ipc.Signal,
 			Args: []string{sig.SignalToName(c.signal)},
 		}
-		ipc.Send(c.pipe, msg)
+		if e := ipc.Send(c.pipe, msg); e != nil {
+			l.Panic(e.Error())
+		}
 	}
 }
 

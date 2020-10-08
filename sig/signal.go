@@ -124,9 +124,13 @@ func (h *Signalh) handle() {
 			}
 			_, trap := h.sigs[sig]
 			if trap {
-				h.sigf(sig)
+				if e := h.sigf(sig); e != nil {
+					h.logr.Error(e.Error())
+				}
 			} else {
-				h.fwdf(sig)
+				if e := h.fwdf(sig); e != nil {
+					h.logr.Error(e.Error())
+				}
 			}
 		case <-h.done.Done():
 			h.logr.Trace("handler exiting")
