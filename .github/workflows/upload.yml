@@ -28,7 +28,7 @@ jobs:
       - name: Compile
         run: |
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o drinit-amd64 cmd/drinit/drinit.go
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o drtinitctl-amd64 cmd/drinitctl/drinitctl.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o drinitctl-amd64 cmd/drinitctl/drinitctl.go
 
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
