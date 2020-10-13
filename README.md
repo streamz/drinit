@@ -37,8 +37,10 @@ In your Docker file, add an ENTRYPOINT and use "Exec form".
 ```dockerfile
     # Add drinit
     ENV DRINIT_VERSION v0.1.0
-    ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinit .
-    ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinitctl .
+    ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinit-amd64 .
+    ADD https://github.com/streamz/drinit/releases/download/${DRINIT_VERSION}/drinitctl-amd64 .
+    RUN mv drinit-amd64 drinit
+    RUN mv drinitctl-amd64 drinitctl
     RUN chmod +x drinit
     RUN chmod +x drinitctl
     ENTRYPOINT ["drinit", "--"]  
