@@ -27,19 +27,19 @@ jobs:
 
       - name: Compile
         run: |
-          go build cmd/drinit/drinit.go
-          go build cmd/drinitctl/drinitctl.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o drinit-amd64 cmd/drinit/drinit.go
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-static"' -o drtinitctl-amd64 cmd/drinitctl/drinitctl.go
 
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: drinit application/octet-stream
+          args: drinit-amd64 application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload to release
         uses: JasonEtco/upload-to-release@master
         with:
-          args: drinitctl application/octet-stream
+          args: drinitctl-amd64 application/octet-stream
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
